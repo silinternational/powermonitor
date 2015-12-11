@@ -1,0 +1,6 @@
+### addon - Power monitor ###
+45 11 1 * *  /usr/local/bin/purgedata.sh
+15 */6 * * * /usr/local/bin/ftppush.pl
+&nolog(true) * * * * *    /usr/local/bin/outbackdata.sh > /dev/null
+&nolog(true) * * * * *    /home/pi/LJFuse/monitorLJ.sh > /dev/null
+### end of Power monitor addon ###

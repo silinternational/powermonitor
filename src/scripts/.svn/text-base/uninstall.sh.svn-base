@@ -1,0 +1,19 @@
+#!/bin/bash
+# uninstaller for JAARS outback power monitor on IPCop
+#07-28-2010
+
+echo "Uninstalling JAARS Outback Power monitor addon"
+
+rm -rf /usr/lib/perl5/5.8.5/Net/FTP
+rm -f  /usr/lib/perl5/5.8.5/Net/FTP.pm
+rm -rf /usr/lib/perl5/5.10.1/Net/FTP
+rm -f  /usr/lib/perl5/5.10.1/Net/FTP.pm
+rm -f  /usr/local/bin/ftppush.pl
+rm -f  /usr/local/bin/outbackdata.sh
+rm -f  /usr/local/bin/purgedata.sh
+rm -f  /usr/local/bin/queryMateSerial
+
+sed -i '/addon - Outback monitor/,/end of Outback monitor/d' /var/spool/cron/root.orig
+/usr/bin/fcrontab -z root
+sed -i '/stty 19200 -crtscts/d' /etc/rc.d/rc.local
+

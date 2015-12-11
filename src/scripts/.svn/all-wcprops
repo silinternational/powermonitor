@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/itprojects/!svn/ver/263/powermon/client/src/scripts
+END
+install.sh
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/itprojects/!svn/ver/259/powermon/client/src/scripts/install.sh
+END
+uninstall.sh
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/itprojects/!svn/ver/263/powermon/client/src/scripts/uninstall.sh
+END
+ftppush.pl
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/itprojects/!svn/ver/252/powermon/client/src/scripts/ftppush.pl
+END
+cronextra
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/itprojects/!svn/ver/252/powermon/client/src/scripts/cronextra
+END
+purgedata.sh
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/itprojects/!svn/ver/252/powermon/client/src/scripts/purgedata.sh
+END
+outbackdata.sh
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/itprojects/!svn/ver/276/powermon/client/src/scripts/outbackdata.sh
+END
