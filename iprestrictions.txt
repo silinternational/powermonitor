@@ -1,0 +1,1 @@
+pagekite.py 80 powrmon.pagekite.me +ip/65.118=ok +ip/162.40.29=ok

@@ -1,16 +1,17 @@
 include version.txt
 
 output = ../output
-productname = outbackpower-$(version)
+productname = powermon-$(version)
 tardest = $(output)/$(productname)
 
-outbackpower : 
+powermon : 
 	rm -rf $(tardest)
 	mkdir $(tardest)
 	#gcc -o queryMateSerial queryMateSerial.c
 	cp -r ./queryMateSerial $(tardest)/
 	cp ./queryMateSerial.c $(tardest)/
 	cp -r ./scripts/* $(tardest)/
+	cp -r ./packages/* $(tardest)/
 	cp ./version.txt $(tardest)/
 	cp ./lgpl.txt $(tardest)/
 	chown root:root $(tardest)/ -R

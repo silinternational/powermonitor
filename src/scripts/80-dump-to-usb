@@ -1,0 +1,2 @@
+KERNEL=="sdb1", RUN+="/home/pi/dump-to-usb.sh"
+

@@ -2,8 +2,8 @@
 # installer for SIL GTIS power monitor on Raspberry Pi
 # copyright paul zwierzynski
 # 07-27-2010
-# 1-21-2016 Modified for Raspberry Pi and labjack
-# 2-4-2016 install bc so we can average readings
+# 3-3-2016 don't install labjack unless needed (avoid daily errorfiles) added wifi-up.sh
+
 
 # only root can install
 if [ "$(id -u)" != "0" ]; then
@@ -30,11 +30,13 @@ cp -f ftppush.pl /usr/local/bin/
 cp -f outbackdata.sh /usr/local/bin/
 cp -f purgedata.sh /usr/local/bin/
 cp -f queryMateSerial /usr/local/bin/
+cp -f wifi-up.sh /usr/local/bin/
 
 chmod 755 /usr/local/bin/ftppush.pl
 chmod 755 /usr/local/bin/outbackdata.sh
 chmod 755 /usr/local/bin/purgedata.sh
 chmod 755 /usr/local/bin/queryMateSerial
+
 
 mkdir /home/$USER/LJFuse
 cp -f fuse.py /home/$USER/LJFuse/
@@ -43,7 +45,7 @@ cp -f monitorLJ.sh /home/$USER/LJFuse/
 chown -R $USER:$USER /home/$USER/LJFuse
 mkdir /home/$USER/power
 chown -R $USER:$USER /home/$USER/power
-
+  
 if [ ! -d /home/$USER/power ]
   then
   echo "Can't create the data folder $FOLDER"
@@ -56,7 +58,8 @@ fi
 chown $USER:$USER /home/$USER/power
 
 #Install libraries for LabjackPython
-apt-get install libusb-1.0 bc fuse
+apt-get install libusb-1.0
+apt-get install fuse
 
 # compile and install the labjack exodriver
 cd $foldername
@@ -78,6 +81,13 @@ if [ ! -f /etc/cron.d/powermon ]
     then
     echo "adding extra cron jobs"
     cat ./cronextra > /etc/cron.d/powermon
+fi
+read -r -p "Are you installing a Labjack device? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+  then
+  echo '* * * * * pi /home/pi/LJFuse/monitorLJ.sh > /dev/null 2>&1' >> /etc/cron.d/powermon
+  else
+  echo '#* * * * * pi /home/pi/LJFuse/monitorLJ.sh > /dev/null 2>&1'  
 fi
 
 # set the comm port for the scripts to use
