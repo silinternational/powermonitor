@@ -1,0 +1,9 @@
+                       Device Boot      Start         End      Blocks   Id  System
+powermon-1.04-preinstall.img1            8192      131071       61440    c  W95 FAT32 (LBA)
+powermon-1.04-preinstall.img2          131072     3870719     1869824   83  Linux
+
+
+      Device Boot      Start         End      Blocks   Id  System
+/dev/loop0p1            8192      131071       61440    c  W95 FAT32 (LBA)
+/dev/loop0p2          131072     2998271     1433600   83  Linux
+

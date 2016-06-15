@@ -1,0 +1,157 @@
+﻿use dd to copy raspbian image to sd card
+insert and boot with internet connection
+login as pi
+sudo raspi-config
+Change locale to en_US.UTF-8
+Change keyboard to 101key US layout
+sudo apt-get update
+sudo dphys-swapfile swapoff
+sudo dphys-swapfile uninstall
+sudo update-rc.d dphys-swapfile remove
+#Use busybox logging which logs to RAM in a round-robin fashion
+apt-get install busybox-syslogd
+dpkg --purge rsyslog
+
+sudo apt-get install autofs udev pagekite
+sudo apt-get remove avahi-daemon
+
+
+apt-get install busybox-syslogd; dpkg --purge rsyslog
+
+sudo apt-get upgrade
+(From instructions on rasclock setup here: https://afterthoughtsoftware.com/products/rasclock)
+sudo nano /boot/config.txt  add the following lines:
+dtoverlay=i2c-rtc,pcf2127
+max_usb_current=1
+hdmi_force_hotplug=1
+
+
+Edit the file /lib/udev/hwclock-set
+Comment out or remove the three lines:
+if [ -e /run/systemd/system ] ; then
+   exit 0
+fi
+Comment out or remove the two lines which contain --systz
+sudo mkdir /media/thumbdrive
+sudo chown pi:pi /media/thumbdrive
+sudo nano /etc/udev/rules.d/automount.rules
+ACTION=="add",    KERNEL=="sda1", RUN+="/bin/mount -t vfat /dev/sda1 /media/thumbdrive -o uid=1000,gid=1000,utf8,dmask=000,fmask=133", RUN+="/home/pi/dump-to-usb.sh"
+ACTION=="remove", KERNEL=="sda1", RUN+="/usr/bin/umount sda1"
+
+
+nano /home/pi/dump-to-usb.sh 
+#!/bin/bash
+mkdir /media/thumbdrive/power
+cp -uPa --target-directory=/media/thumbdrive/power /home/pi/power/*.csv
+
+chmod +x /home/pi/dump-to-usb.sh
+
+
+edit /etc/rsyslog.conf
+ Was: 
+     auth,authpriv.*                 /var/log/auth.log
+     *.*;auth,authpriv.none             -/var/log/syslog
+
+
+Is: 
+     :msg, contains, "pam_unix(cron:session)" ~
+     auth,authpriv.*                 /var/log/auth.log
+     *.*;auth,authpriv,cron.none     -/var/log/syslog
+
+
+
+
+### Next steps are for running on a usb drive #######
+#Get a USB flash drive, format it with a single ext4 partition
+#as root, copy all the files from the SD card second partiton onto the usb drive (or from powermon-usb folder on my hdd)
+#Now edit the file /etc/fstab on the usb drive, comment out the SD partition and add a line to mount sda1 as /
+#Like so:
+
+
+proc            /proc           proc    defaults          0       0
+/dev/sda1       /               ext4    defaults,noatime  0       1
+/dev/mmcblk0p1  /boot           vfat    defaults          0       2
+#/dev/mmcblk0p2  /               ext4    defaults,noatime  0       1
+
+
+
+
+#On the SD card boot partition edit /boot/cmdline.txt
+Was:
+dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mcsBlabla rootfstype=ext4 elevator=deadline rootwait
+
+
+Is:
+dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/sda1 rootfstype=ext4 elevator=deadline rootwait rootdelay=5
+
+
+#########################################################
+
+
+#If running from SD, not USB stick, expand the filesystem to fill the SD card (sudo raspi-config)
+
+
+
+
+#copy powermon tar file to USB stick (or SD card)
+cd ~
+tar -zxf powermon-blabla.tgz
+cd powermon-blabla
+sudo ./install.sh
+
+
+
+
+#verify /usr/local/bin/ftppush.pl has right username/password and works
+
+
+sudo nano /etc/pagekite.d/10_account.rc:
+        Replace "NAME.pagekite.me" with "blabla-powermon.pagekite.me"
+        Replace "YOURSECRET" with "AppropriatPagekitepassword"
+        Remove the line "abort_not_configured" and the comment above it.
+sudo cp /etc/pagekite.d/80_sshd.rc.sample  /etc/pagekite.d/80_sshd.rc
+sudo invoke-rc.d pagekite restart
+
+
+#install certificates to allow us remote access
+mkdir .ssh
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+nano ~/.ssh/authorized_keys
+#Paste this in
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6SVNo2rCGbdzra/fz8UR9wG/ov8SD3+u87Opjv50TqISL7P/GzHjOj8QGo0O4wQjrTK5ZSbexdLs24t4uokZ/awf37CI+oDDxC6pbbovwNmtN/WnzaNwV6RiX6Yt0v5f3jYgpzvIMKuH3hH2ToEZ47O1MzClMLyLf96qNyj9rngOQQAN0DwYT2Zlh2JoRCCUi7aUdLm9niqa0BJc+RN3NGvxOYe2X5BJt8EuzZ9A6/EZwfodMfqvtYDS3JhowRthkYuCUH+0FVH3b/npRWMNPlcREY3vj12K8Z58xzKbCfZgFjgNfZVqJ51IGMtz8L/9wTyTzXvrdt33+xyY5vUDV zee@its-zwierzynski
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9Y7Bspngk/0mG//59sZC7dQmnX+ST003AcgZSvZN/J545HO0UuZKXW6vgzRDDvZG04Q/2XIm0R2scZxgmQx8Bv9uyD0RY3dpS0eNKyemKfS9PfMJmZ0tdTUUWs+ZegQkHR9KVr4T8/CL/nEFVt7uUsR1OtIAv+npcLZOlBH7pQ42T1DpR72yo2nE9v3BvRKTMaw+m1gLwJI3s764HUSLx/jRb0XWqA8KCbeueqWVEXSZszGKHtT4CZ+o4mwerbB7ViXn8jFhItCffd8f/RdvMp6xSbvXOxDr0hh/Ilqkn9nPAfDXau8f9L++vomseKZ687GiF59scrBLvPGFUKmO7 zee@its-zwierzynski
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrTuocLu3ymLpfp6d0B6/rvwLty99deuvFRvGPBegVog7JlM8myyuiajjIFmhDgDptxaXygTQX0K5Meao74F1e10VuQsC9WhCjLGIL5gs2sQo3U3jiZj3suyhhRKPgIxSD0jKQoxxW6R3HiWPYL2fgsE2KlndQvrhmudqDOEML0NbvGWAcAZXU3B3N5FHit40H/2HUNvmcFgcet3AoSLYOdc8e3bimXkNmAnHzxE9YTzlXy7hgWjWvINE7ocuCfTAHKwPvtQRu+3CaFa2U2yeHJ1eeu8StFN/qAdplJI1tLbA4bXxNoL6l4VSGWPKUChD5iWQX2A1UlDgvEtBuW4L zee@its-zwierzynski
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIoR/NNRvzrx7uItKi1+xbcXhzpR3s5OesLS/NqUv8zs4uPUAiMMUtVOplGfFsBHivMbSzofG51Hai+Adqwk5UaNQ+XbWdT2ma7w3xVGclwd5XOXbMPsa+ZfwjQLiUE8fGoWbNgd+8OfQubIMOtpqwOYUeaj9AkmPIqfElpwUxXbGftGwgKsIg254z1ksKzEBRTmcElZbu3XOGmkqmOs8IaitpU8KHESayPKaTObEMq94wCXEH40a5liGZT+IlVXcLqkQe5nwgANGmXZKDXN4ksrR7kgpJ3UOr7OsDDcVpESE88WIK+4vtuZuJTuargs+Er4CpmkVEpNn0uBfwtf7x zee@its-zwierzynski
+
+
+
+
+If using wifi setup the ssid and password by editing the file /etc/wpa_supplicant/wpa_supplicant.conf
+Make it look like:
+
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+   ssid="mySSID"
+   psk="myPassphrase"
+}
+
+(Change ssid and pre shared key to the correct ones the pi will be using)
+Also edit /etc/network/interfaces and make the wlan0 section look like this:
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet manual
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+change the password for user pi to something secure and document it (sudo raspi-config)
+OR BETTER after installing above keys, disable ssh password based authentication:
+ nano /etc/ssh/sshd_config
+
+
+    ChallengeResponseAuthentication no
+    PasswordAuthentication no
+    UsePAM no
+/etc/init.d/sshd restart
+   Pass87orB34YRg

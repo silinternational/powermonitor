@@ -1,0 +1,491 @@
+@charset "utf-8";
+* { margin:0; padding:0; }
+body {
+  background-color: #fff;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.333;
+  font-family: Arial, sans-serif;
+  font-size:14px;
+  text-align: center;
+  min-height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+}
+p, ul {
+  margin-bottom: .8em;
+}
+a:link,
+a:visited {
+  color: #c00;
+  text-decoration: none;
+} 
+
+
+h1, h2, h3, h4, h5 {
+  color: #000;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+h1 {
+  font-size: 2.167em;
+  font-weight: normal;
+}
+h2 {
+  font-size: 1.75em;
+  font-weight: normal;
+  margin: 2em 0 0 0;
+  padding-bottom:5px;
+  border-bottom: 1px solid #e80022;
+}
+h3 {
+  font-size: 1em;
+  font-weight: normal;
+}
+h4 {
+  font-size: 1em;
+}
+
+
+img {
+  border: none;
+}
+
+
+#header #imageContainer,
+#header #banner,
+#steps,
+#info,
+#content {
+  width: 94%;
+  max-width: 965px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+
+.right { display: inline; float: right; }
+.left { display: inline; float: left; }
+
+.spacer2 {
+  clear: both;
+  background-color: #ccc;
+  height: 1px;
+}
+#container .dottedSpacer { display: none; }
+
+#header {
+  position: relative;
+  background-color: #fff;
+  -moz-box-shadow:    rgba(0,0,0, .1)  0 0 75px;
+  -webkit-box-shadow: rgba(0,0,0, .1)  0 0 75px;
+  box-shadow:         rgba(0,0,0, .1)  0 0 75px;
+  border-bottom: 3px solid #e80022;
+  padding: 0;
+  height: 125px;
+  margin-bottom: 0;
+}
+#header #site-logo{width:960px;margin:0 auto;text-align:left;background:url(img/pagekite-logo.png) no-repeat 0 50%;background-size:164px 108px;}
+#header #site-logo:before{content:"the fast, reliable localhost tunneling solution";display:block;font-size:12px;color:#666;width:150px;margin:0 0 0 180px;padding-top:75px;}
+
+/*
+#header #imageContainer {
+  position: relative;
+  text-align: right;
+  background: url(img/pagekite-logo.png) 0 0 no-repeat;
+  height: 108px;
+}
+#header #imageContainer br {
+  display: none;
+}*/
+#header div {height: 125px;}
+#header #logo {
+  display: inline-block;
+  padding-top: 45px;
+  margin-right: 15px;
+
+}
+
+#header #banner {
+  font-size: 1.75em;
+  height:40px;
+  line-height:40px;
+  margin-top:30px;
+  
+}
+#header #banner select {
+  margin-right: 10px;
+  display:inline;
+  font-size: .571em;
+  vertical-align: middle;
+}
+#header #banner img {
+  margin-right:10px;
+  vertical-align: middle;
+}
+
+#header #banner-left{height:40px;}
+#header #banner-left .title{height:40px;}
+#header #banner-right{height:55px;background:url(img/dalpay-logo.png) no-repeat 98% 50%;margin:-160px 0 0 0;}
+
+/*-------------------------------------------------------------------
+------------------------ steps --------------------------------------
+-------------------------------------------------------------------*/
+#steps {
+  margin-top:100px;
+  margin-bottom:25px;
+  text-align: right;
+  ~min-height:0; /* ie hasLayout fix */
+}
+#steps:after { display:block; clear:both; content:"."; visibility:hidden; font-size:1px; height:0; }
+#steps .step {
+  font-size: 12px;
+  display: inline;
+  float: left;
+  padding: 3px 0 5px 0;
+  border-bottom: 2px solid #999;
+  text-align:center;
+  width: 24.6%;
+  margin: 0 0 0 .5%;
+}
+#steps .step:first-child {
+  margin: 0;
+}
+#steps .visited,
+#steps .unvisited {
+  color: #999;
+  background-color: #f4f4f4;
+}
+#steps .unvisited {
+  color: #bbb;
+}
+#steps .unvisited:hover{cursor:pointer;color:#e80022;}
+#steps .active {
+  font-weight: bold;
+  background-color: #e2e2e2;
+  color: #555;
+  border-bottom-color: #e2e2e2;
+}
+
+/*-------------------------------------------------------------------
+------------------------ content --------------------------------------
+-------------------------------------------------------------------*/
+#content .boxContent { display:inline; float:left; width:337px; max-width:100%; min-height:1px; }
+#content .boxContentp{width:100%;}/* NEW 07.03.2014. */
+#content .boxContent th { font-weight: bold; text-align: left;}
+#content .boxGray {
+  /*background-color: #f4f4f4;*/
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-left:1px solid #ccc;
+  border-right:1px solid #ccc;
+  ~min-height:0; /* ie hasLayout fix */
+  /*border:none;*/
+  position:relative;
+ /* margin-bottom:-1px;*/
+}
+
+#content .boxGray:first-child{border-top:none;}
+#content .boxGray .boxContent{padding-top:5px;}
+#content .boxGraym{margin-top:15px;}/* NEW 07.03.2014. */
+#content .boxGray:after { display:block; clear:both; content:"."; visibility:hidden; font-size:1px; height:0; }
+#content .spacer2 + .boxGray {
+  border-top: none;
+}
+#content .boxGray .boxGray {
+  border-bottom: none;
+  border-left:none;
+  border-right:none;
+}  
+
+#content .boxGray h3 { margin:0; padding:12px 10px 0 10px;font-weight:600; }
+#content .boxGray p { padding:10px 10px 0 10px; }
+#content .boxGray p.checkboxp{margin-left:337px;padding:10px 10px 10px 0;}/* NEW 07.03.2014. */
+#content .boxGray p.checkboxp strong{}/* NEW 07.03.2014. */
+#content .boxGray p.checkboxe{}/* NEW 07.03.2014. */
+#content .boxGray label { height:22px; margin:3px 3px 3px 8px; padding:9px 0 0 61px; }
+#content .boxGray select { margin:8px 10px; max-width: 100%; }
+#content .boxGray input { margin:8px 10px; }
+#content .boxGray textarea { margin:8px 10px; width:350px; max-width: 100%; }
+#content .boxGray select,
+#content .boxGray input,
+#content .boxGray textarea {
+  padding: .44em;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 1em;
+  font-family: Arial, sans-serif;
+}
+#content .boxGray select:focus,
+#content .boxGray input:focus,
+#content .boxGray textarea:focus {
+  border-color: #e80022;
+  -moz-box-shadow:    rgba(0,0,0, .20)  0 0 10px;
+  -webkit-box-shadow: rgba(0,0,0, .20)  0 0 10px;
+  box-shadow:         rgba(0,0,0, .20)  0 0 10px;
+}
+#content .boxGray .radio { margin:12px 3px 3px 8px; }
+#content .boxGray .checkbox { margin:10px 3px 3px 8px; }
+#content .boxGray .radio,
+#content .boxGray .checkbox {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+}
+#content .boxGray .radio:focus,
+#content .boxGray .checkbox:focus {
+  -moz-box-shadow:    none;
+  -webkit-box-shadow: none;
+  box-shadow:         none;
+}
+#content .boxGray #visa { background:transparent url(img/visa.gif) no-repeat scroll 0 0; }
+#content .boxGray #visaelectron { background:transparent url(img/visaelectron.gif) no-repeat scroll 0 0; }
+#content .boxGray #mastercard { background:transparent url(img/mastercard.gif) no-repeat scroll 0 0; }
+#content .boxGray #eurocard { background:transparent url(img/eurocard.gif) no-repeat scroll 0 0; }
+#content .boxGray #americanexpress { background:transparent url(img/americanExpress.gif) no-repeat scroll 0 0; }
+#content .boxGray #maestro { background:transparent url(img/maestro.gif) no-repeat scroll 0 0; }
+#content .boxGray #dinersclub { background:transparent url(img/dinersClub.gif) no-repeat scroll 0 0; }
+#content .boxGray #ideal { background:transparent url(img/iDeal.gif) no-repeat scroll 0 0; }
+#content .boxGray #jcb { background:transparent url(img/jcb.gif) no-repeat scroll 0 0; }
+#content .boxGray #directebanking { background:transparent url(img/directebanking.gif) no-repeat scroll 0 0; }
+#content .boxGray #banksofortuberweisung { background:transparent url(img/banksofortuberweisung.gif) no-repeat scroll 0 0; }
+#content .boxGray .errorMessage {font-weight: 600;color:#f00;float:left;padding:0;margin:0 10px 5px 348px;font-size:12px;}
+#content .boxGray .row { display:inline; float:left; width:337px; max-width:100%; }
+#content .boxGray .row{display:table-cell \ ;min-width:337px \ ;} /* IE fix 22.07.2015. *//* radio buttons for CC */
+
+#content .boxGray .subText { padding: 0 10px 10px 10px; }
+
+#content .boxWhite { ~min-height:0; /* ie hasLayout fix */}
+#content .boxGray .boxWhite{padding:0;}/* NEW 22.07.2015. */
+#content .boxWhite:after { display:block; clear:both; content:"."; visibility:hidden; font-size:1px; height:0; }
+#content .boxWhite p {
+  padding: 10px;
+}
+
+#content .boxRedBorder {
+  padding: 5px 2%;
+  border-top: 2px solid #e80022;
+  background-color: #ffe2e2;
+  margin: .8em 0;
+  font-weight: bold;
+}
+#content .boxRedBorder p {
+}
+
+#content .boxGray .boxWhite{border-bottom:1px solid #ccc;}
+
+.boxColor {
+  /*background-color: #fff;
+  padding: 10px 2% 15px 2%;
+  margin: 1.8em 0;
+  border: 1px solid #e9e9e9;
+  border-top: 2px solid #e80022;
+  -moz-box-shadow:    rgba(0,0,0, .07)  0 0 20px;
+  -webkit-box-shadow: rgba(0,0,0, .07)  0 0 20px;
+  box-shadow:         rgba(0,0,0, .07)  0 0 20px;
+  -webkit-border-bottom-right-radius: 5px;
+-webkit-border-bottom-left-radius: 5px;
+-moz-border-radius-bottomright: 5px;
+-moz-border-radius-bottomleft: 5px;
+border-bottom-right-radius: 5px;
+border-bottom-left-radius: 5px;*/
+}
+.boxColor p {
+  margin: 0;
+}
+
+#container #info {
+  padding: 10px;
+  max-width:938px;
+  color:#222;
+  background:#fff;
+  border: 1px solid #e9e9e9;
+  border-top: 2px solid #e80022;
+    -moz-box-shadow:    rgba(0,0,0, .07)  0 0 20px;
+  -webkit-box-shadow: rgba(0,0,0, .07)  0 0 20px;
+  box-shadow:         rgba(0,0,0, .07)  0 0 20px;
+    -webkit-border-bottom-right-radius: 5px;
+-webkit-border-bottom-left-radius: 5px;
+-moz-border-radius-bottomright: 5px;
+-moz-border-radius-bottomleft: 5px;
+border-bottom-right-radius: 5px;
+border-bottom-left-radius: 5px;
+}
+
+#content #info {
+  width: 100%;
+}
+
+
+#container #info .boxColor {
+  padding:0;
+  margin: 0;
+  border:none;
+}
+#container #content #info{margin-top:25px;padding:0 10px;}
+#container #content #info .boxColor{padding:0;}
+#container #content .boxColor {padding: 15px 0 0 0;margin: 1.2em 0;}
+
+/*-------------------------------------------------------------------
+------------------------ buttons ------------------------------------
+-------------------------------------------------------------------*/
+#content .boxColor button,/* NEW 07.03.2014. */
+#content .boxGray button,
+#content .boxColor .formbutton,
+#content .boxGray .button,
+#content .boxGray .formbutton,
+#content .boxWhite .button,
+#content .boxWhite .formbutton {
+  font-size: 1.2em;
+  font-family: Arial, sans-serif;
+  display: inline-block;
+  vertical-align: middle;
+  ~float: left;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: rgba(0,0,0, .33) 1px 1px 0;
+  border: 2px outset #fff;
+  border: 2px solid rgba(0,0,0, .35);
+  border-top-color:  rgba(255,255,255, .5);
+  border-left-color: rgba(255,255,255, .4);
+  padding: 3px 12px;
+  margin: 3px 3px 1em 3px;
+  background: #7b7;
+  background-image: -webkit-gradient(
+                        linear,
+                        left top,
+                        left bottom,
+                        color-stop(0, transparent),
+                        color-stop(1, rgba(0,0,0, .20))
+                     );
+  background-image: -moz-linear-gradient(
+                        center top,
+                        transparent        0%,
+                        rgba(0,0,0, .20) 100%
+                      );
+  -moz-border-radius:    7px;
+  -webkit-border-radius: 7px;
+  border-radius:         7px;
+  -webkit-appearance: none;
+}
+#content .boxColor button:hover,
+#content .boxColor button:focus,
+#content .boxGray button:hover,
+#content .boxGray button:focus,
+#content .boxColor .formbutton:hover,
+#content .boxColor .formbutton:focus,
+#content .boxGray .button:hover,
+#content .boxGray .button:focus,
+#content .boxGray .formbutton:hover,
+#content .boxGray .formbutton:focus,
+#content .boxWhite .button:hover,
+#content .boxWhite .button:focus,
+#content .boxWhite .formbutton:hover,
+#content .boxWhite .formbutton:focus {
+  color: #fff;
+  text-decoration: none;
+  background-color: #3e3;
+  -moz-box-shadow:    rgba(0,0,0, .33) 1px 1px 6px 1px;
+  -webkit-box-shadow: rgba(0,0,0, .33) 1px 1px 6px 1px;
+  box-shadow:         rgba(0,0,0, .33) 1px 1px 6px 1px;
+  cursor: pointer;
+}
+
+
+#content .boxWhite .button.left{margin-left:10px;background:#dfdfdf;border: 1px solid #d2d1d1;color:#9a9a9a;text-shadow: rgba(255,255,255, .33) 1px 1px 0;}  /* NEW 22.07.2015. */
+#content .boxWhite .button.left:hover,#content .boxWhite .button.left:focus{background:#dadada;border: 1px solid #ccc;}/* NEW 22.07.2015. */
+
+#content .boxGray button{float:right;clear:both;margin:30px 0 10px 0;line-height:22px;}
+/*-------------------------------------------------------------------
+------------------------ footer -------------------------------------
+-------------------------------------------------------------------*/
+#footer::before{content:"";display:block;height:1px;width:7000px;background:#d8d8d8;position:absolute;top:0px;left:-2500px;}
+#footer {
+  font-size:12px;
+  margin:50px auto 0px auto;
+  background-color: #f0f0f0;
+  padding: 35px 0;
+  text-align: center;
+  color: #666;
+  /*box-shadow: 0 2500px 0 2500px #f0f0f0;
+  -webkit-box-shadow: box-shadow: 0 2500px 0 2500px #f0f0f0;
+  -moz-box-shadow: box-shadow: 0 2500px 0 2500px #f0f0f0;*/
+  /*border-top: 1px solid #d8d8d8;*/
+  /*position:absolute; */
+  position:relative;
+  width:100%;
+  max-width:960px;
+  text-align: center;
+}
+.boxGray #footer {
+ /* border-top: 1px solid #d8d8d8;*/
+}
+#footer a { color: #c00; }
+
+/*-------------------------------------------------------------------
+------------------------ text fields --------------------------------
+-------------------------------------------------------------------*/
+
+a[href]:hover,
+a[href]:focus,
+a[href]:active {
+  color: #c00;
+  text-decoration: underline;
+}
+a:hover,
+a:active {
+  outline: none;
+}
+
+
+/* Responsive Mobile */
+/* NEW 11.02.2016. */
+@media only screen and (max-width: 768px) {
+  #header #site-logo,
+  #header #imageContainer,
+  #header #banner,
+  #steps,
+  #info,
+  #content,
+  #container #info{
+    width: 100%;max-width: auto!important;
+  }
+
+  h2 {text-indent:10px;}
+  
+  #header #site-logo{background-position:25px 50%;}
+  #header #site-logo:before{margin:0 0 0 205px;background:#ead;display:none;}
+  #header #banner-left{font-size:28px;}
+  #header #banner-left .title{margin-top:-240px;text-align:center;}
+  #header #banner{margin-top:11em;}
+
+  #steps .step {width: 90%;margin:0 5%;}
+  #steps .step:first-child {margin: 0 5%;}
+
+
+  #content .boxGray select {max-width:85%;}
+
+  #content .boxGray .errorMessage{margin-left:10px;}
+
+  #content .boxContent{width:100%;}
+
+  #content .boxContent table{margin:0 2.5%;width:90%;}
+
+  #container #info{padding: 20px 5%;width:90%;}
+
+  #content .boxColor .formbutton {
+    padding:10px 20px;
+    margin:0 5%!important;
+    width:90%;
+    max-width:100%;
+    height:auto;
+    line-height: 1.2;
+    float:none!important;
+  }
+
+  #footer {padding:20px 0%;position: inherit;width:auto;max-width:auto;}
+  #footer::before{display:none;}
+
+}

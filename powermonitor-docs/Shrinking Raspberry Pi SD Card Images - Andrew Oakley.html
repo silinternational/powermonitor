@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+
+<meta name="verify-v1" content="l4hk1IDA2wFYBwEpWiyc5Ks8QVw31sHwtFpl5XEE2jY=" />
+<title>Shrinking Raspberry Pi SD Card Images - Andrew Oakley</title />
+<meta name="viewport" content="width=device-width">
+<link rel="shortcut icon" href="http://www.aoakley.com/favicon.ico" />
+<link rel="apple-touch-icon" href="http://www.aoakley.com/apple-touch-icon.png" />
+<link rel="apple-touch-icon-precomposed" href="http://www.aoakley.com/apple-touch-icon-precomposed.png" />
+<link rel=stylesheet type="text/css" href="/inc/styles.css" />
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-18754486-2']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script type="text/javascript">
+function getParameterByName(name){
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+  return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+</script>
+
+</head>
+<body>
+
+<script type="text/javascript">
+if ( screen.width >= 992 )
+{
+  document.writeln('<table border=0 width="100%" style="border: none; border-collapse: collapse; width: 100%;"><tr><td> </td><td width=960 style="width: 960px;">');
+}
+</script>
+
+<A NAME="top"><P STYLE="margin: -4px; background-color: #0000A0; color: white; font-face: arial, sans; font-size: 32px;" WIDTH="100%"></A>
+<A HREF="/"><IMG SRC="/images/logos/aoakley-logo-blue-64.gif" WIDTH=64 HEIGHT=64 BORDER=0 ALIGN=ABSMIDDLE></A> <A HREF="/" STYLE="color: white; text-decoration: none;">aoakley.com</A>
+</P>
+<!--googleoff: all--><!--googleon: all-->
+
+<H1>Shrinking Raspberry Pi SD Card Images</H1>
+<META SUBJECTS="Computing">
+<META DATE="2015-10-09">
+
+<P>
+I teach coding with the Raspberry Pi computer at <A HREF="http://www.cotswoldjam.org">Cotswold Raspberry Jam</A>, and as part of that I often need to store assorted SD card images, either for backups, or as master versions which I copy out to the growing number of tutorial machines that we have.
+
+<P>
+These images can be quite large. Shrinking these images has a number of benefits, including:
+<UL>
+<LI> Takes us less storage space (which can really matter on a cheap SSD on an old cheap netbook!)
+<LI> Takes less time to transfer over the network
+<LI> Takes a LOT less time to write to SD cards
+</UL>
+
+Throughout this article I'm going to use the initialism "SD" to refer to both full-size Secure Digital cards, and Micro SD cards.
+
+<P>
+Remember, the Raspberry Pi's Raspbian operating system comes with a tool to resize the filesystem to the largest size the SD card will support ( <TT CLASS=CODE>sudo rpi-config</TT> , then select Expand Filesystem). So you really do lose nothing by shrinking the image, because it's easy to expand it back again.
+
+<P>
+<STRONG>CAUTION: WRITING DISK IMAGES INCORRECTLY CAN NEAR-PERMANENTLY RENDER YOUR COMPUTER INOPERABLE. Follow the instructions carefully and note any warnings. If you're not sure, stop here.</STRONG>
+
+<H2>Use a Linux PC with a hard disk or SSD</H2>
+
+<P>
+To do this properly, you need a Linux PC with a proper hard disk or reasonably-sized SSD. You <EM>can</EM> do this on a Raspberry Pi using an external USB card reader, but it'll be monumentally slow because you'll be limited to the USB2 speed of both the external card reader and the internal SD card slot. If you really must do this entirely on a Raspberry Pi, try to use SD cards that have minimum read and write speeds at or above 25 megabits per second (which is the maximum that USB2 supports).
+
+<P>
+This article assumes you are using a Debian-based Linux distribution; I used Linux Mint 17.2 but any vaguely recent Debian-based distro such as Ubuntu or, yes, Raspbian should work fine.
+
+<P>
+You will also need to be running a desktop. We're going to use <TT CLASS=CODE>gparted</TT> which is a graphical partition editing tool. There is a commandline alternative, but it makes things far more difficult than this tutorial already is.
+
+<P>
+<H2>Before you start - use Raspbian not NOOBS</H2>
+
+<P>
+First off, if your goal is to have a small image file, then you want to be working from an SD card that was imaged only with the Raspbian operating system. It's all very well to use NOOBS - it's great for beginners - but it wastes quite a lot of space. If you want to shrink card images then you are not a beginner so NOOBS is no longer for you. NOOBS cards also have a number of different partitions which are difficult to work with. If your goal is a small card image... don't start with NOOBS. Image a new card using the lastest Raspbian-only image from <A HREF="https://www.raspberrypi.org/downloads/">raspberrypi.org/downloads</A> and then copy over whatever you need from your NOOBS card.
+
+<P>
+<STRONG>Do not proceed any further with this how-to article if you are still using NOOBS.</STRONG> I realise this is an "I wouldn't start from here" instruction, but that's the practicality of the situation. You could use your favourite search engine to search for "zero fill" techniques which will make a NOOBS image compress better, but it won't shrink the image file itself.
+
+<P>
+The Rasbian operating system has become quite large recently (Oct 2015). The Libreoffice and Wolfram packages are particularly large, about half a gig each. If you don't intend to use these, boot up your Raspberry Pi, go to a terminal session and type:
+
+<PRE CLASS=CODE>sudo apt-get remove --purge libreoffice-*
+sudo apt-get remove --purge wolfram-engine</PRE>
+
+<P>
+You can always add them back later with <TT CLASS=CODE>sudo apt-get install libreoffice wolfram-engine</TT> .
+
+<P>
+You can also clear out the cache of downloaded .deb packages. This might save you several hundred megabytes if you've done a lot of updates or installed a lot of extra packages:
+
+<PRE CLASS=CODE>sudo apt-get clean</PRE> 
+
+<P>
+Don't forget to properly shut down your Raspberry Pi (for example, with <TT CLASS=CODE>sudo shutdown -h now</TT> ) before removing the SD card.
+
+<H2>Making the image</H2>
+
+<P>
+Let's start by making an image. Pop your SD card in your PC's card reader. Most likely the file manager will open a window or two. Close these windows if so.
+
+<P>
+Now find out where the card is mounted. Go to a terminal session and type:
+
+<PRE CLASS=CODE>df -h</PRE>
+
+<P>
+You'll see something like:
+<PRE CLASS=CODE>/dev/sde1                   56M   20M   37M  36% /media/aoakley/boot1
+/dev/sde2                  7.2G  3.8G  3.0G  56% /media/aoakley/ec2aa3d2-eee7-454e-8260-d145df5ddcba</PRE>
+
+<P>
+The important thing is that you now know that your SD card is on /dev/sde . It has two partitions, /dev/sde1 and /dev/sde2.
+
+<P>
+<STRONG>Your system might mount the card somewhere else, such as /dev/sdg or even /dev/sdb. Make a note of where your card is mounted and use this wherever I use /dev/sde , /dev/sde1 or /dev/sde2.</STRONG>
+
+<P>
+Let's unmount this but leave the card in the card reader. This will let us take an image.
+
+<PRE CLASS=CODE>sudo umount /dev/sde1 /dev/sde2</PRE>
+
+<P>
+Obviously if yours is on /dev/sdb or /dev/sdg or whatever, you'll need to type that in appropriately. It is highly unlikely that your SD card is on /dev/sda unless you're mad enough to do this entirely on a Raspberry Pi. Typically /dev/sda will be your hard disk or SSD, so don't mess with that.
+
+<P>
+<TT CLASS=CODE>sudo</TT> might ask for a password. Check that you really, really haven't typed /dev/sda unless you really, really know what you're doing, then enter your password.
+
+<P>
+I use <TT CLASS=CODE>dcfldd</TT> for making card images, which is a replacement for the old <TT CLASS=CODE>dd</TT> disk duplication program. <TT CLASS=CODE>dcfldd</TT> has a number of improvements, most notably a progress meter so you can see it working, and be confident that it hasn't crashed.
+
+<P>
+Install <TT CLASS=CODE>dcfldd</TT> if you haven't already got it (it won't hurt to try to install it again):
+
+<PRE CLASS=CODE>sudo apt-get update && sudo apt-get install dcfldd</PRE>
+
+<P>
+Now take the image. Again, change /dev/sde to wherever your SD card is mounted.
+
+<PRE CLASS=CODE>sudo dcfldd if=/dev/sde of=imagename.img</PRE>
+
+<P>
+You can change imagename to whatever you like - I use YYYYMMDD dates and names, so 20151009-tutorial.img for example.
+<P>
+The image will start to be taken, together with a nice progress counter (which you don't get with old-style <TT CLASS=CODE>dd</TT> ). When it finishes there may be a pause before you get the command line prompt back - give it a minute or two to flush the cache.
+
+<P>
+Once finished, you should force a synchronise of any outstanding input or output (there shouldn't be any, but just to be sure), then the card will be safe to remove.
+
+<PRE CLASS=CODE>sudo sync</PRE>
+
+<P>
+You may now safely remove the card.
+<P>
+Next, let's change the ownership of the .img file. The image file will be owned by root (because we used sudo). It's probably a wise move to change the ownership to your user. For example, my username is aoakley but you'll need to change this to your username:
+
+<PRE CLASS=CODE>sudo chown aoakley.aoakley imagename.img</PRE>
+
+<P>
+We use aoakley twice because we are changing both the ownership and the group.
+
+<P>
+Okay, you've got an image file; you have backed up your SD card. But it's probably quite a big file - as big as the SD card itself. Let's start making it smaller.
+
+<P>
+<H2>Resizing a partition within an image file</H2>
+
+<P>
+For this, we're going to use gparted. If you don't have gparted installed:
+
+<PRE CLASS=CODE>sudo apt-get update && sudo apt-get install gparted</PRE>
+
+<P>
+Normally gparted can only edit physical storage. We're going to do a little magic with "the loopback device" to make the PC think that the image file is mounted as a real SD card.
+
+<P>
+The Raspbian operating system has two partitions. 1 is the boot partition, which is tiny and doesn't need shrinking. Partition 2 is where everything else is stored, and typically has lots of free space. Let's have a look at these partitions:
+
+<PRE CLASS=CODE>sudo fdisk -l imagename.img</PRE>
+
+This should show something like:
+
+<PRE CLASS=CODE>        Device Boot      Start         End      Blocks   Id  System
+imagename.img1            8192      122879       57344    c  W95 FAT32 (LBA)
+imagename.img2          122880    15415295     7646208   83  Linux</PRE>
+
+<P>
+Take a note of the START sector for the second partition. In the above example, this is 122880. Write it down because we're going to use it later on in this tutorial, as well as right now. Let's mount that partition:
+
+<PRE CLASS=CODE>sudo losetup /dev/loop0 imagename.img -o $((START*512))</PRE>
+
+<P>
+Replace the word START with the start sector number of your second partition; in my case, 122880. If you get a message that the device is busy, this is probably because you've previously instanced it incorrectly; remove the existing loop0 with <TT CLASS=CODE>sudo losetup -d /dev/loop0</TT> and try again.
+
+<P>
+By default, gparted won't read loopback devices, so we need to start it with the loopback parameter:
+
+<PRE CLASS=CODE>sudo gparted /dev/loop0</PRE>
+
+<P>
+gparted should start in a desktop window and show the second partition. Click the /dev/loop0 partition and select Partition menu, Resize/Move . Change the value of "New Size" so that it is slightly above "Minimum Size". I suggest allowing 20MB extra space. Click the Resize/Move button when done.
+<P>
+Now click Edit menu, Apply All Operations. The data will be moved to fit into the new size.
+<P>
+When complete, it will display the new size. Make sure you <STRONG>note down the new size</STRONG> before you exit.
+<P>
+If the size is not displayed, click the triangle icon next to Details, and the triangle icons that appear nested below them, until you can see the new size. Eventually you'll see a line like <STRONG>"resize2fs -p /dev/loop0 1410048K"</STRONG> where the number in K is the new size in kilobytes.
+<P>
+No, really, <STRONG>note down the new size</STRONG> before you exit.
+<P>
+Now remove the loopback device for the second partition, create a new loopback device for the whole image and edit the partition table to reflect the new smaller size:
+
+<PRE CLASS=CODE>sudo losetup -d /dev/loop0
+sudo losetup /dev/loop0 imagename.img
+sudo fdisk /dev/loop0</PRE>
+
+<P>
+<TT CLASS=CODE>fdisk</TT> is rather basic to use.
+
+<UL><LI> Enter <TT CLASS=CODE>d 2</TT> to delete the table entry for the second partition
+<LI>Enter <TT CLASS=CODE>n p 2</TT> to create a new second partition entry
+<LI>Enter the START sector number that you used earlier, as the start sector. In my example it was 122880.
+<LI>Enter +NEWSIZE as the new size. <STRONG>Don't forget the plus at the start.</STRONG> This is the new size that you noted down before exiting gparted. If your number was in K (kilobytes) or M (megabytes) then type that letter in too (for example +1410048K ).
+<LI>Enter <TT CLASS=CODE>w</TT> to write the new partition table and exit
+</UL>
+
+<P>
+You may see a message telling you that the new partition table can't be used until the next reboot - don't worry about this message; it doesn't really apply to the loopback devices which we're creating and destroying.
+<P>
+That's the partition resized, and the partition table updated. Now we can remove the loopback device, then we just need to trim the empty space from the end of the image file. Let's look at the new partition table and then destroy the loopback device:
+
+<PRE CLASS=CODE>sudo fdisk -l /dev/loop0
+sudo losetup -d /dev/loop0</PRE>
+
+<P>
+Note down the END sector of the second partition. In my case this is 8615936. Now let's trim down the file to this length, replacing END with your end sector number:
+
+<PRE CLASS=CODE>truncate -s $(((END+1)*512)) imagename.img</PRE>
+
+<P>
+And you're done. For extra marks, you can fill any empty space with zeroes to make it slightly better to compress and a teeny, tiny bit faster to write to in use:
+
+<PRE CLASS=CODE>sudo losetup /dev/loop0 imagename.img -o $((START*512))
+sudo mkdir -p /mnt/imageroot
+sudo mount /dev/loop0 /mnt/imageroot
+sudo dcfldd if=/dev/zero of=/mnt/imageroot/zero.txt
+sudo rm /mnt/imageroot/zero.txt
+sudo umount /mnt/imageroot
+sudo rmdir /mnt/imageroot
+sudo losetup -d /dev/loop0</PRE>
+
+If you're keeping the image for backup or archival purposes, you can now compress the file with:
+
+<PRE CLASS=CODE>zip imagename.zip imagename.img</PRE>
+
+<P>
+...or use <TT CLASS=CODE>tar cvzf</TT> or whatever your favourite file compression tool is. Don't forget to uncompress it (for example, <TT CLASS=CODE>unzip</TT> or <TT CLASS=CODE>tar xvzf</TT> ) before trying to write it to an SD card.
+
+<H2>Copying the image to a fresh SD card</H2>
+
+Once you've got your shrunk .img file, you can copy it to another SD card. Insert your blank card, close any popup file manager windows, unmount it and write the image:
+
+<PRE CLASS=CODE>sudo umount /dev/sde1 /dev/sde2
+sudo dcfldd if=imagename.img of=/dev/sde
+sudo sync</PRE>
+
+<P>
+Remember you may need to change /dev/sde , /dev/sde1 and /dev/sde2 depending where your system mounts your cards.
+
+<P>
+When you use the new card for the first time, remember to expand the filesystem to fill the space on the new card. This then requires a reboot. From the Raspberry Pi's terminal, do <TT CLASS=CODE>sudo raspi-config</TT> , then select Expand Filesystem. Alternatively you can do this directly from the command line with:
+
+<PRE CLASS=CODE>sudo raspi-config --expand-rootfs
+sudo shutdown -r now</PRE>
+
+
+      <P STYLE="text-align: right; font-size: 10px;"><EM>Public Domain - <A HREF="http://www.aoakley.com">Andrew Oakley</A> - 2015-10-09</EM></P>
+  
+<P STYLE="margin: -4px; background-color: #0000A0; color: white; font-face: arial, sans; font-size: 14; text-align: right;" WIDTH="100%">
+<A HREF="#top" STYLE="color: white; text-decoration: none;">Top</A> -
+      <A HREF="/articles/index.php?subject=Computing" STYLE="color: white; text-decoration: none;">More&nbsp;Computing&nbsp;Articles</A> -
+    <A HREF="/articles/" STYLE="color: white; text-decoration: none;">Article&nbsp;Index</A> -
+  <A HREF="/" STYLE="color: white; text-decoration: none;">aoakley.com</A>
+<A HREF="/"><IMG SRC="/images/logos/aoakley-logo-blue-32.gif" WIDTH=32 HEIGHT=32 BORDER=0 ALIGN=ABSMIDDLE></A>
+</P>
+
+<script type="text/javascript">
+if ( screen.width >= 992 )
+{
+  document.writeln('</td><td> </td></tr></table>');
+}
+</script>
+
+</body></html>

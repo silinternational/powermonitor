@@ -1,0 +1,688 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- encoding: utf-8 -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <title>Pagekite - 
+ Configure Your GNU/Linux System for use with Pagekite
+</title>
+
+  <link href="/static/skin/main.css" media="all" rel="stylesheet" type="text/css" />
+  <!--[if (lt IE 9)&(!IEMobile) ]><link href="/static/skin/main-full.css" media="all" rel="stylesheet" type="text/css" /> <![endif]--><!--[if (gte IE 9)|!(IE)]><!-->
+  <link href="/static/skin/main-full.css" media="all and (min-width: 720px) and (min-device-width: 720px)" rel="stylesheet" type="text/css" /><!--<![endif]-->
+  <link rel="shortcut icon" href="/static/skin/i/fav.ico" />
+  
+  <script>
+    (function(){
+      window.PK = window.PK || {};
+      // check if user is flagged as logged in.
+      PK.loggedIn = /name=/.test(document.cookie);
+      // make note of referrals.
+      var match = window.location.search.match(/(?:\?|&)(referrer=[^&]*?)/);
+      if ( match )
+      {
+        var date = new Date();
+        date.setTime( date.getTime() + (2 *24*60*60*1000) ); // referral code lasts for two days
+        document.cookie = match[1] + '; expires='+ date.toUTCString() +'; path=/;';
+      }
+    })();
+
+    // Google Analytics
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-23279825-1']);
+    _gaq.push(['_setDomainName', 'none']);
+    _gaq.push(['_setAllowLinker', 'true']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+  
+  <style type='text/css'>
+    
+    a.page6,
+    a.page56,
+    a.page183 {color: #000; font-weight: bold; text-decoration: none;}
+  </style>
+  
+  <script src="/static/skin/noflicker.js"></script>
+
+
+ 
+
+</head>
+<!--[if lt IE 9 ]><body class="msie"> <![endif]--><!--[if (gte IE 9)|!(IE)]><!-->
+<body> <!--<![endif]-->
+
+  <div class="pghead"><a id='top' name='top'></a>
+    <h1 class="brand">
+      <a href="/" title="Pagekite - home">
+        <img class="logo" src="/static/skin/i/pagekite-logo.png" alt="Pagekite" />
+      </a>
+      <span class="slogan">the fast, reliable localhost tunneling solution</span>
+    </h1>
+
+    <p class="stream skiplink"><a href='#pgnav'>Skip to navigation</a></p>
+    <hr class="stream" />
+  </div><!-- /.pghead -->
+
+  
+   
+  <div class="pgmiddle">
+
+    <div class="pgmain">
+    
+ 
+
+
+
+
+
+
+  
+   
+  
+
+  
+  <h1>Configure Your GNU/Linux System for use with Pagekite</h1>
+    <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/835f44d1c523f16a8669628c7dc02cbe/?default=&amp;amp;s=40" height="40" width="40"/></span>
+  <p class="meta">
+    <span class="by">By Jon Spriggs</span>
+    <span class="timestamp">2013-01-17, 15:53</span>
+  </p>
+  
+
+  
+    <a name="autoTocFancy"></a><ul class="autoToc autoTocFancy"><li class="ATh2"><a href="#be">Configuring an HTTP back-end</a></li><li class="ATh2"><a href="#sshbe">Configuring an SSH back-end</a></li><li class="ATh2"><a href="#fe">Configuring PageKite as a public facing front-end</a></li><li class="ATh2"><a href="#troubleshooting">Troubleshooting</a></li></ul>
+<h2 id="be">Configuring an HTTP back-end</h2>
+<p><strong>What is this?</strong> This is what you would do if you have a web-server, for example Apache or Nginx, running on your computer and you would like it to always be visible to the world whenever you have a working Internet connection.</p>
+<h3 id="instructions1">Instructions</h3>
+<p>This assumes you have downloaded and installed the package as per
+<a href="/wiki/Howto/GNULinux/DebianPackage/">DebianPackage</a> or <a href="/wiki/Howto/GNULinux/RpmPackage/">RpmPackage</a> and have <a href="https://pagekite.net/home/">an account at pagekite.net</a>:</p>
+<ol>
+<li>Edit <code>/etc/pagekite.d/10_account.rc</code>:<ol>
+<li>Replace "NAME.pagekite.me" with the name of one of your pagekites</li>
+<li>Replace "YOURSECRET" with the shared secret value from <a href="https://pagekite.net/home/">pagekite.net/home/</a></li>
+<li>Remove the line "abort_not_configured" and the comment above it.</li>
+</ol>
+</li>
+<li>Rename <code>/etc/pagekite.d/80_httpd.rc.sample</code> to <code>/etc/pagekite.d/80_httpd.rc</code></li>
+<li>If your web server is not listening on port 80, edit <code>80_httpd.rc</code> and replace the port number in the <code>service_on=</code> (or <code>backend=</code>) line with the correct value.  You can also add more back-ends, for example an <code>https</code> back-end if your web server is configured for native SSL.</li>
+<li>
+<p>Restart <a href="/wiki/PageKite/">PageKite</a> with one of the following commands:</p>
+<pre><code># RedHat/Fedora:
+service pagekite restart
+
+# Ubuntu/Debian:
+sudo invoke-rc.d pagekite restart
+</code></pre>
+</li>
+</ol>
+<p><a href="#troubleshooting">See below</a> for some hints about how to test and debug your configuration if you have any problems.</p>
+<hr />
+<h2 id="sshbe">Configuring an SSH back-end</h2>
+<p>Configuring an SSH back-end is almost exactly the same procedure as configuring an HTTP back-end, <a href="#be">described above</a> - the only difference is in step 2, when you should rename the <code>/etc/pagekite.d/80_sshd.rc.sample</code> to <code>80_sshd.rc</code>.</p>
+<p>Note that you will need to reconfigure your SSH clients as well, as described on the <a href="/wiki/Howto/SshOverPageKite/">SshOverPageKite</a> page.</p>
+<hr />
+<h2 id="fe">Configuring PageKite as a public facing front-end</h2>
+<p><strong>What is this?</strong> A <a href="/wiki/PageKite/">PageKite</a> front-end is useful if you have a server on the Internet and would like to use it instead of (or in addition to) the commercial <a href="/">pagekite.net</a> service.  Most people do not need this.</p>
+<h3 id="instructions2">Instructions</h3>
+<p>This assumes you have downloaded and installed the package as per
+<a href="/wiki/Howto/GNULinux/DebianPackage/">DebianPackage</a> or <a href="/wiki/Howto/GNULinux/RpmPackage/">RpmPackage</a>.</p>
+<ol>
+<li>Remove all the lines in <code>/etc/pagekite.d/10_account.rc</code> (but leave the file there!)</li>
+<li>
+<p>Edit <code>/etc/pagekite.d/20_frontend.rc</code> adding the following lines:</p>
+<pre><code>  isfrontend
+  ports=80,443
+  protos=http,https
+  domain=http,https:*.your.domain:MakeUpAPasswordHere
+</code></pre>
+</li>
+<li>
+<p>Optional: If you are sharing your HTTP port between your pagekite instance
+       and another web server, you can specify the IP address to bind to in
+       <code>/etc/pagekite.d/20_frontend.rc</code>, as follows:</p>
+<pre><code>  host=192.168.0.1
+</code></pre>
+<p>Then, create <code>/etc/pagekite.d/80_backend.rc</code> with the following:</p>
+<pre><code>  service_on=http:192.168.0.1:127.0.0.1:80:
+  service_on=https:192.168.0.1:127.0.0.1:443:
+  service_on=http:yourhostname:127.0.0.1:80:
+  service_on=https:yourhostname:127.0.0.1:443:
+  service_on=http:yourhostname,fqdn:127.0.0.1:80:
+  service_on=https:yourhostname,fqdn:127.0.0.1:443:
+</code></pre>
+<p>(alternately, use <code>service_on=http:unknown:127.0.0.1:80</code>)</p>
+<p>The above assume you're sharing your apache server by binding it
+   to <code>127.0.0.1:80</code> and <code>127.0.0.1:443</code> and that your primary
+   interface IP is <code>192.168.0.1</code>.</p>
+</li>
+<li>
+<p>Optional: If you wish to provide SSL/TLS encryption between the front-end
+       and back-end, you will first need to generate SSL certificates.</p>
+<pre><code>  openssl req -new -x509 -keyout /etc/pagekite.d/site-key.pem \
+    -out /etc/pagekite.d/site-cert.pem -days 365 -nodes
+  cat /etc/pagekite.d/site-key.pem /etc/pagekite.d/site-cert.pem \
+    |tee /etc/pagekite.d/frontend.pem
+</code></pre>
+<p>You can examine the contents of the .pem files by using commands like these:</p>
+<pre><code>  cat /etc/pagekite.d/site-cert.pem | openssl x509 -text
+  cat /etc/pagekite.d/frontend.pem | openssl x509 -text
+</code></pre>
+<p>Once you've got your certificates, add this to <code>/etc/pagekite.d/20_frontend.rc</code>
+   on the backend:</p>
+<pre><code>  frontend=frontend.your.domain:443
+  fe_certname=frontend.your/domain
+  ca_certs=/etc/pagekite.d/site-cert.pem
+</code></pre>
+<p>Your front-ends need to have a copy of the <code>frontend.pem</code> file and include
+   this line in their own configuration scripts:</p>
+<pre><code>  tls_endpoint=frontend.your.domain:/path/to/frontend.pem
+</code></pre>
+</li>
+</ol>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="logs">System logs</h3>
+<p>The system-wide <a href="/wiki/PageKite/">PageKite</a> from the .deb and .rpm packages is configured to log details about what it is doing to the file <code>/var/log/pagekite/pagekite.log</code>.</p>
+<p>That is generally the first place to look for information about what the program is doing (or not doing).</p>
+<h3 id="testing">Interactive testing</h3>
+<p>If either of the above configurations do not seem to be working, it may be useful to stop the service (<code>service pagekite stop</code> or <code>invoke-rc.d pagekite stop</code>) and then experiment with the following command:</p>
+<pre><code>$ sudo pagekite --clean --optdir=/etc/pagekite.d
+</code></pre>
+<p>This will run <a href="/wiki/PageKite/">PageKite</a> interactively on the console, using the configuration from <code>/etc/pagekite.d</code>. This makes it easier to catch any configuration errors and test different settings.</p>
+<p>Adding the arguments <code>--logfile=stdio</code> and <code>--debugio</code> may also be helpful in particularly difficult cases.</p>
+    
+  
+
+  
+
+   
+
+   
+
+   
+
+  
+<div class="comments" id="comments">
+  <h2>Comments</h2>
+
+  
+  <ol>
+    
+      
+    <li class="comment score3" id="c64">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/564bb564293f2f05f9f254d6b54ee01c/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Nick said</span>
+        <span class="timestamp">on 2011-11-13, 20:02</span>
+      </div>
+      <div class="content">
+        This page is very informative, but it needs a little introduction for both the HTTP backend and the PageKite frontend options.<br /><br />- Why would you prefer one of these options over another?<br />- What are the use-cases for each?<br />- What are the equivalent pagekite.py commands?<br /><br />The HTTP backend is obviously simpler, though it supports only a single pagekite.
+      </div>
+      <a class="perma" href="#c64" title="Direct link to comment #1">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score100" id="c70">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/2faf289f4fe770b25610ce9622789eca/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Bjarni Rúnar Einarsson said</span>
+        <span class="timestamp">on 2011-11-27, 22:28</span>
+      </div>
+      <div class="content">
+        Valid points, Nick.  I will see about updating the page.<br /><br />In the meantime: the first recipe just explains how to use PageKite start up on boot and automatically make your local web server visible.<br /><br />The second recipe explaines how you can configure the PageKite software on a publicly visible server so you can use that machine *instead* of the service provided by <a href="http://pagekite.net" rel="nofollow">pagekite.net</a>.  This second case is understandably quite a bit more complicated. :-)
+      </div>
+      <a class="perma" href="#c70" title="Direct link to comment #2">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c204">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/dd489fa99fef52e03368cc070c7c0caf/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">JW said</span>
+        <span class="timestamp">on 2012-11-01, 12:47</span>
+      </div>
+      <div class="content">
+        While following the directions under &quot;Configuring an HTTP back-end&quot;, I got to step 3 where I&#39;m told to edit the 80_httpd.rc file and &quot;...replace the port number in the backend= line with the correct value...&quot; but there&#39;s one problem...there is no such line.  <br /><br />Additionally, do I leave the following line (within 80_httpd.rc) as is, or is it a &quot;template&quot; line where I&#39;m supposed to replace the example text with my account/pagekite info?<br /><br /> service_on = http:@kitename : localhost:80 : @kitesecret<br /><br />Thanks in advance...JW
+      </div>
+      <a class="perma" href="#c204" title="Direct link to comment #3">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score100" id="c205">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/2faf289f4fe770b25610ce9622789eca/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Bjarni Rúnar Einarsson said</span>
+        <span class="timestamp">on 2012-11-01, 13:06</span>
+      </div>
+      <div class="content">
+        Hi JW!  The latest versions of PageKite have renamed backend= to service_on=.  I should update this page.<br /><br />You can leave the @-placeholders as they are, they will use the default kite/secret values defined in the account.rc file.  Of course, if you want to fly multiple kites you&#39;ll create more lines and replace the placeholders with the other kite&#39;s names.
+      </div>
+      <a class="perma" href="#c205" title="Direct link to comment #4">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c209">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/88d8c20eec0176be387b216a51eb21be/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">rifai said</span>
+        <span class="timestamp">on 2012-11-14, 09:32</span>
+      </div>
+      <div class="content">
+        is there any troubleshoot both back-end and front-end if the back-end failed to connect to front-end.
+      </div>
+      <a class="perma" href="#c209" title="Direct link to comment #5">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c230">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/32f8171d0913d414d5f9ce381b89403f/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Francis said</span>
+        <span class="timestamp">on 2013-02-28, 13:09</span>
+      </div>
+      <div class="content">
+        If I run my own front-end, how do I specify to the front-end what kites are available, what are their secrets, ....
+      </div>
+      <a class="perma" href="#c230" title="Direct link to comment #6">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c266">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/c82c2b5a14b67d77aed018ff7fce9d11/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Johan said</span>
+        <span class="timestamp">on 2013-07-04, 09:17</span>
+      </div>
+      <div class="content">
+        After I started a second account and did some --adding, I got this <br /><br />&quot;REJECTED: http:jg.pagekite.me (duplicate) &quot;<br /><br />Some tips what to do? uninstall?
+      </div>
+      <a class="perma" href="#c266" title="Direct link to comment #7">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c279">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/a0709b77545598c2a4ff595a9763af87/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Josh said</span>
+        <span class="timestamp">on 2013-08-28, 01:40</span>
+      </div>
+      <div class="content">
+        I&#39;m having problems with a php document downloading instead of displaying. Is there  a way to add php to the apache config file?
+      </div>
+      <a class="perma" href="#c279" title="Direct link to comment #8">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c286">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/7bc2c833105c89b9b26c889fdc3f141a/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">shepbarrick said</span>
+        <span class="timestamp">on 2013-09-22, 00:51</span>
+      </div>
+      <div class="content">
+        I got a question i have owncloud+pagekite i want it to start automatically every time my computer boots if it gets restarted or just stay running in the bg? please help!
+      </div>
+      <a class="perma" href="#c286" title="Direct link to comment #9">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c302">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/c81c519a8be22d7a9b888966cec163ec/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">moarli said</span>
+        <span class="timestamp">on 2014-06-20, 17:22</span>
+      </div>
+      <div class="content">
+        I´m running pagekite on two raspberry pis as backend and frontend. on the frontend pi I get &quot;Errno 98&quot;.<br />What does it mean? Pleas help!
+      </div>
+      <a class="perma" href="#c302" title="Direct link to comment #10">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c303">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/3d1eaa1a736689326a7fee5d000ac703/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">sorin said</span>
+        <span class="timestamp">on 2014-06-22, 14:42</span>
+      </div>
+      <div class="content">
+        I set up pagekite on a debian (raspberry-pi) and i&#39;m experiencing the following issue:<br />When run as a service the default settings are used (/root/.pagekite.rc) which have the &quot;default&quot; secret. I get an error for wrong secret.<br />When i run pagekite --clean --optdir /etc/pagekite.d all works fine <br /><br />any suggestions?
+      </div>
+      <a class="perma" href="#c303" title="Direct link to comment #11">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c304">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/df9888690259497adcf284a8844b4645/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">urac said</span>
+        <span class="timestamp">on 2014-06-25, 10:33</span>
+      </div>
+      <div class="content">
+        @moarli<br />means another server is already listening on a port you&#39;re trying to use (most likely apache on port 80).<br />Try<br />apachectl stop<br />on frontend
+      </div>
+      <a class="perma" href="#c304" title="Direct link to comment #12">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c308">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/b087c7b8b07979258823df945f638314/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Concelor said</span>
+        <span class="timestamp">on 2014-08-14, 04:03</span>
+      </div>
+      <div class="content">
+        When i attempt to run sudo pagekite --clean --optdir=/etc/pagekite.<br />I get http:XXX.pagekite.me (duplicate) any suggestions?<br />
+      </div>
+      <a class="perma" href="#c308" title="Direct link to comment #13">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c309">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/b087c7b8b07979258823df945f638314/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Concelor said</span>
+        <span class="timestamp">on 2014-08-14, 04:33</span>
+      </div>
+      <div class="content">
+        When i attempt to run sudo pagekite --clean --optdir=/etc/pagekite.<br />I get http:XXX.pagekite.me (duplicate) any suggestions?<br />
+      </div>
+      <a class="perma" href="#c309" title="Direct link to comment #14">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score0" id="c317">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/64844c685c3ea04e828fe0f5ad510bac/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">paul said</span>
+        <span class="timestamp">on 2014-10-01, 15:33</span>
+      </div>
+      <div class="content">
+        When I run (sudo pagekite --clean --optdir=/etc/pagekite) I get invalid literal for int () with base 10: &#39;@kitesecret.  What does this mean?
+      </div>
+      <a class="perma" href="#c317" title="Direct link to comment #15">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c318">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/c045aa663cf9b0d17d64329f689cbb91/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">devan said</span>
+        <span class="timestamp">on 2014-10-06, 20:40</span>
+      </div>
+      <div class="content">
+        re: duplicate pagekite, you need to delete the ~/.pagekite as it appears to be included even with --optdir<br /><br />My problem is that is works fine if I invoke with local user and sudo but, when i start the service I get:<br />ts=541d3cd9; t=2014-09-20T08:37:45; ll=2d; debug=Ping 173.230.155.164:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=2e; debug=Ping 178.79.140.143:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=2f; debug=Ping 173.230.155.164:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=30; debug=Ping 106.187.99.46:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=31; debug=Ping 88.198.198.92:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=32; debug=Ping 88.198.198.93:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=33; debug=Ping 110.232.112.207:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=34; debug=Ping 50.116.41.25:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=35; debug=Ping 93.95.226.149:443 failed: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=36; debug=Preferred:<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=37; err=Error in connect: Traceback (most recent call last):   File &quot;/usr/lib/pymodules/python2.7/pagekite/proto/conns.py&quot;, line 464, in _BackEnd     data, parse = self._Connect(server, conns)   File &quot;/usr/lib/pymodules/python2.7/pagekite/proto/conns.py&quot;, line 324, in _Connect     self.fd.connect((sspec[0], int(sspec[1])))   File &quot;/usr/lib/pymodules/python2.7/sockschain/__init__.py&quot;, line 1011, in connect     proxy)   File &quot;/usr/lib/pymodules/python2.7/sockschain/__init__.py&quot;, line 871, in __negotiatehttpconnect     raise HTTPError((statuscode, statusline[2])) HTTPError: (403, &#39;Forbidden&#39;)<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=38; err=Server response parsing failed: (403, &#39;Forbidden&#39;); id=s0<br />ts=541d3cda; t=2014-09-20T08:37:46; ll=39; eof=1; id=s0<br />
+      </div>
+      <a class="perma" href="#c318" title="Direct link to comment #16">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c362">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/81369c3d1a59478d0ecc6a3b0a15cc83/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Jim Duehr said</span>
+        <span class="timestamp">on 2015-08-12, 18:04</span>
+      </div>
+      <div class="content">
+        One big question I have about this pertains to the commercial pagekite package and traffic limits.<br /><br />If I set up my own public facing front end pagekite service, am I still beholden to pagekite GB transfer limits?
+      </div>
+      <a class="perma" href="#c362" title="Direct link to comment #17">Permalink</a>
+    </li>
+    
+      
+    <li class="comment score3" id="c371">
+      <span class="img"><img class=gravatar src="https://secure.gravatar.com/avatar/26eb5cdb3172a9562f83d08366958231/?default=&amp;amp;s=40" height="40" width="40"/></span>
+      <div class="meta">
+        <span class="by">Paolo said</span>
+        <span class="timestamp">on 2015-11-06, 19:54</span>
+      </div>
+      <div class="content">
+        Im having a problem running the pagekite kite on the back end using a SSL self signed certificate.<br /><br />Ive changed the port in 80_httpd.rc  from 80 to 443 but I get an error on the browser about submitting a http to a https server.  <br /><br />It works if I use pagekite.py 443 <a href="https://kitename.pagekite.me" rel="nofollow">https://kitename.pagekite.me</a> but if I close my putty session it stops the service<br /> <br />Any ideas
+      </div>
+      <a class="perma" href="#c371" title="Direct link to comment #18">Permalink</a>
+    </li>
+    
+  </ol>
+
+  
+
+</div>
+
+
+
+
+
+
+
+
+<form class="commentform" action="#formPostTarget" method="post">
+
+  
+  <h2>Leave a comment</h2>
+  
+
+  
+
+  <div class="fi_txt req">
+    <label for="cmt_name">Name:</label>
+    <input id="cmt_name" type="text" name="comment_name" value="" />
+  </div>
+  <div class="fi_txt fi_txt req">
+    <label for="cmt_email">E-mail: <i>(not published)</i></label>
+    <input id="cmt_email" type="email" name="comment_email" value="" />
+  </div>
+  <div class="honey">(
+    (Please leave these blank:
+    <input type="text" name="hxzp_email" style="width:1em" />
+    <input type="text" name="hxzp_url" style="width:1em" />
+    <input type="text" name="hxzp_homepage" style="width:1em" />)
+  </div>
+  <div class="fi_bdy req">
+    <label for="cmt_body">Your Comment:</label>
+    <textarea id="cmt_body" name="comment_body" cols="60" rows="5"></textarea>
+  </div>
+
+  
+
+  
+  <button type="submit" name="submit">Post Comment</button>
+  <p class="note">
+    We use <a href='http://www.gravatar.com/'>Gravatar</a> for commenter's
+    photos. <a href='http://en.gravatar.com/site/signup/'>Get your own</a>,
+    it's free!
+  </p>
+  
+
+  <div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='76553167030fd936c8f603ceded039fa' /></div>
+  <input type="hidden" name="commenting" value="1" />
+  <input type="hidden" name="comment_speedbump" value="1458334620" />
+</form>
+
+
+
+  
+
+
+
+
+    </div><!-- /.pgmain -->
+
+    <div class="pgaside">
+    
+ 
+  
+   
+    
+     <h3><a class=page56 href="/wiki/">Wiki</a></h3>
+
+<ul>
+ <li><a class=page54 href="/wiki/HowTo/">How-To</a></li>
+ <li><a class=page134 href="/wiki/TroubleShooting/">Troubleshooting</a></li>
+ <li><a class=page96 href="/wiki/OpenSource/">Open Source</a></li>
+ <li><a class=page59 href="/wiki/WishList/">Wish List</a></li>
+ <li><a class=page165 href="/wiki/AboutWiki/">About Our Wiki</a></li>
+</ul>
+
+<h3>Links</h3>
+<ul>
+<li><a href="https://pagekite.net/support/quickstart/">Quick Start</a></li>
+<li><a href="https://pagekite.net/support/faq/">FAQ</a></li>
+<li><a href="/support/chat/">Chat</a></li>
+</ul>
+    
+   
+  
+ 
+
+    </div><!-- /.pgaside -->
+
+  </div><!-- /.pgmiddle -->
+  
+
+  <div class="pgnav" id="pgnav"><a name="pgnav"></a>
+    <hr class="stream" />
+    <div class="mainmenu">
+      <h2>Pagekite.net - main pages:</h2>
+      <ul>
+        <li class="home "><a href="/">Home</a></li>
+        <li class=""><a href="/Blog/">Blog</a></li>
+        <li class=""><a href="/pricing/">Pricing</a></li>
+        <li class=""><a href="/support/">Support</a></li>
+        <li class="current"><a href="/wiki/">Wiki</a></li>
+        <li class="userinfo">
+          <a class="btn account" href="https://pagekite.net/home/">My Account</a>
+          <script>
+            document.write( PK.loggedIn ?
+                              '<a class="logout" href="https://pagekite.net/home/?logout=1&at='+ (new Date()).getTime() +'">Log out</a>':
+                              '<a class="signup" href="https://pagekite.net/signup/">Sign up</a>'
+              );
+          </script><noscript><a class="logout" href="https://pagekite.net/home/?logout=1">Log out</a></noscript>
+        </li>
+      </ul>
+    </div>
+
+  </div><!-- /.pgnav -->
+
+
+  <div class="pgfoot">
+    <hr class="stream" />
+    <div class="footer">
+     
+ 
+
+
+     <div class=pgembed>
+ 
+
+
+
+
+
+
+  
+
+  
+
+  
+         <div class="col">
+        <h3 id="h3tbpe">The Beanstalks Project ehf.</h3>
+        <ul>
+          <li><a href="/company/">About Us</a></li>
+          <li><a href="/company/iceland/">Iceland? Really?</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h4 id="h4s">Service</h4>
+        <ul>
+          <li><a href="/support/intro/">Overview</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/support/faq/">FAQ</a></li>
+          <li><a href="/wiki/HowTo/">How-To</a></li>
+          <li><a href="/humans.txt">TOS &amp; Privacy</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h4 id="h4c">Community</h4>
+        <ul>
+          <li><a href="/wiki/">Wiki</a></li>
+          <li><a href="/Blog/">Blog</a></li>
+          <li><a href="/events/">Events</a></li>
+          <li><a href="/support/chat/">Chat</a></li>
+        </ul>
+        <p></p>
+        <ul>
+          <li><a class="ext" href="http://groups.google.com/group/pagekite-discuss">Google&nbsp;Group</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h4 id="h4os">Open Source</h4>
+        <ul>
+          <li><a href="/wiki/OpenSource/">FOSS Wiki</a></li>
+          <li><a href="/wiki/Floss/Video/">Video: Introduction</a></li>
+          <li><a href="/wiki/Floss/FreedomAndPrivacy/">Freedom &amp; Privacy</a></li>
+          <li><a href="/wiki/Floss/License/">License</a></li>
+        </ul>
+        <p>Find us on:</p>
+        <ul>
+          <li><a class="ext" href="https://github.com/pagekite/PyPagekite">Github</a></li>
+          <li><a class="ext" href="http://freshmeat.net/projects/pagekitepy">Freshmeat</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <h4 id="h4cu">Contact Us</h4>
+        <ul>
+         <li>
+            <a title="Follow PageKite on Twitter" href="https://www.twitter.com/PageKite"><img src="/static/skin/i/tw-button.png" alt="Twitter"/></a>
+            <a title="Subscribe to our blog" href="/Blog?rss=1"><img src="/static/skin/i/rss-button.png" alt="RSS"></a></li>
+         </li>
+          <li><a href="/support/chat/">Chat on IRC</a></li>
+        </ul>
+        <p>Email:</p>
+        <ul>
+          <li><a class=mailto href="mailto:info.w2011@pagekite.net">info<noscript>spam</noscript>@pagekite.net</a></li>
+        </ul>
+      </div>
+
+    
+  
+
+  
+   <ul class="tagitems">
+ 
+</ul>
+
+  
+
+
+
+ 
+</div>
+
+     <div class="adbuttons">
+      <a id="rannis"
+         title="Our work is supported by the Icelandic Technology Development Fund."
+         href="http://www.rannis.is/english/funding/technology-development-fund/"
+       ><img src="/static/skin/i/rannis-tdfund.png"></a>
+     </div>
+    </div>
+  </div><!-- /.pgfoot -->
+  
+
+
+</body>
+</html>

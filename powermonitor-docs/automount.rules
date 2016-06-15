@@ -1,0 +1,11 @@
+# We wrap commands into calls to /bin/sh because PROGRAM and RUN
+# accept only single commands, not command lists.
+# PROGRAM figures out the label of the disk. Caching only gets in a
+# way, returning old labels instead of querying for new ones, so we
+# disable it. We use sed to replace non-alphanumeric symbols with
+# underscore to facilitate readability and "typeability".
+# RUN mounts the disk with specified label.
+ACTION=="add",    KERNEL=="sda*", PROGRAM="/bin/sh -c '/bin/sleep 2; /sbin/blkid -c /dev/null -s LABEL -o value /dev/%k | /bin/sed -r s#[^a-zA-Z0-9-]#_#g'", RUN+="/bin/sh -c '/bin/sleep 3 ; /usr/bin/pmount --umask 000 --noatime %k %c'" RUN+="/home/pi/dump-to-usb.sh"
+ACTION=="remove", KERNEL=="sda*", RUN+="/usr/bin/pumount %k"
+
+
