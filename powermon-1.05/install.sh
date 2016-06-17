@@ -3,6 +3,7 @@
 # copyright paul zwierzynski
 # 07-27-2010
 # 3-3-2016 don't install labjack unless needed (avoid daily errorfiles) added wifi-up.sh
+# 17 June include dump-to-usb
 
 
 # only root can install
@@ -31,7 +32,8 @@ cp -f outbackdata.sh /usr/local/bin/
 cp -f purgedata.sh /usr/local/bin/
 cp -f queryMateSerial /usr/local/bin/
 cp -f wifi-up.sh /usr/local/bin/
-cp -f shutdown_pi.py /usr/local/bin
+cp -f shutdown_pi.py /usr/local/bin/
+cp -f dump-to-usb.sh /home/pi/
 
 chmod 755 /usr/local/bin/ftppush.pl
 chmod 755 /usr/local/bin/outbackdata.sh
