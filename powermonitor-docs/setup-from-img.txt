@@ -1,6 +1,6 @@
 use dd to copy pre-built powermon image to sd card
 insert and boot with internet connection
-login as pi  default password is   Pass87orB34YRg
+login as pi  default password is   raspberry
 
 expand the filesystem to fill the SD card (sudo raspi-config)
 
@@ -25,70 +25,19 @@ dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 r
 
 #########################################################
 
+# fix permissions
+sudo chown pi:pi /home/pi -R
+
 # create new ssh keys by doing this:
 sudo apt-get --reinstall install openssh-server openssh-client
 OR:
 ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key 
 ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
 
-# fix permissions
-sudo chown pi:pi /home/pi -R
-
-mkdir .ssh
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/authorized_keys
-nano ~/.ssh/authorized_keys
-#Paste this in
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6SVNo2rCGbdzra/fz8UR9wG/ov8SD3+u87Opjv50TqISL7P/GzHjOj8QGo0O4wQjrTK5ZSbexdLs24t4uokZ/awf37CI+oDDxC6pbbovwNmtN/WnzaNwV6RiX6Yt0v5f3jYgpzvIMKuH3hH2ToEZ47O1MzClMLyLf96qNyj9rngOQQAN0DwYT2Zlh2JoRCCUi7aUdLm9niqa0BJc+RN3NGvxOYe2X5BJt8EuzZ9A6/EZwfodMfqvtYDS3JhowRthkYuCUH+0FVH3b/npRWMNPlcREY3vj12K8Z58xzKbCfZgFjgNfZVqJ51IGMtz8L/9wTyTzXvrdt33+xyY5vUDV zee@its-zwierzynski
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9Y7Bspngk/0mG//59sZC7dQmnX+ST003AcgZSvZN/J545HO0UuZKXW6vgzRDDvZG04Q/2XIm0R2scZxgmQx8Bv9uyD0RY3dpS0eNKyemKfS9PfMJmZ0tdTUUWs+ZegQkHR9KVr4T8/CL/nEFVt7uUsR1OtIAv+npcLZOlBH7pQ42T1DpR72yo2nE9v3BvRKTMaw+m1gLwJI3s764HUSLx/jRb0XWqA8KCbeueqWVEXSZszGKHtT4CZ+o4mwerbB7ViXn8jFhItCffd8f/RdvMp6xSbvXOxDr0hh/Ilqkn9nPAfDXau8f9L++vomseKZ687GiF59scrBLvPGFUKmO7 zee@its-zwierzynski
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrTuocLu3ymLpfp6d0B6/rvwLty99deuvFRvGPBegVog7JlM8myyuiajjIFmhDgDptxaXygTQX0K5Meao74F1e10VuQsC9WhCjLGIL5gs2sQo3U3jiZj3suyhhRKPgIxSD0jKQoxxW6R3HiWPYL2fgsE2KlndQvrhmudqDOEML0NbvGWAcAZXU3B3N5FHit40H/2HUNvmcFgcet3AoSLYOdc8e3bimXkNmAnHzxE9YTzlXy7hgWjWvINE7ocuCfTAHKwPvtQRu+3CaFa2U2yeHJ1eeu8StFN/qAdplJI1tLbA4bXxNoL6l4VSGWPKUChD5iWQX2A1UlDgvEtBuW4L zee@its-zwierzynski
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIoR/NNRvzrx7uItKi1+xbcXhzpR3s5OesLS/NqUv8zs4uPUAiMMUtVOplGfFsBHivMbSzofG51Hai+Adqwk5UaNQ+XbWdT2ma7w3xVGclwd5XOXbMPsa+ZfwjQLiUE8fGoWbNgd+8OfQubIMOtpqwOYUeaj9AkmPIqfElpwUxXbGftGwgKsIg254z1ksKzEBRTmcElZbu3XOGmkqmOs8IaitpU8KHESayPKaTObEMq94wCXEH40a5liGZT+IlVXcLqkQe5nwgANGmXZKDXN4ksrR7kgpJ3UOr7OsDDcVpESE88WIK+4vtuZuJTuargs+Er4CpmkVEpNn0uBfwtf7x zee@its-zwierzynski
 
 
-
-## set hdmi output to always be on
-sudo nano /boot/config.txt
-#add this line:
-hdmi_force_hotplug=1
-
-# make a clean shutdown button
-# solder ~10K pull-up resistor on bottom of board from GPIO pin 17 (3.3v) to pin 37 (GPIO 26)
-# connect momentaty pushbutton to GPIO pin 37 with jumper and ground other side of switch thru 1K resistor to GPIO pin 39
-cd /home/pi  
-nano shutdown_pi.py  
-# add these lines:
-#!/bin/python  
-# Simple script for shutting down the raspberry Pi at the press of a button.  
-# by Inderpreet Singh  
-      
-import RPi.GPIO as GPIO  
-import time  
-import os  
- 
-# Use the Broadcom SOC Pin numbers  
-# Setup the Pin with Internal pullups enabled and PIN in reading mode.  
-GPIO.setmode(GPIO.BCM)  
-GPIO.setup(26, GPIO.IN, pull_up_down = GPIO.PUD_UP)  
- 
-# Our function on what to do when the button is pressed  
-def Shutdown(channel):  
-    os.system("sudo shutdown -h now")  
- 
-# Add our function to execute when the button pressed event happens  
-GPIO.add_event_detect(26, GPIO.FALLING, callback = Shutdown, bouncetime = 2000)  
- 
-# Now wait!  
-while 1:  
-    time.sleep(1)  
-
-# save and make executable
-chmod +x shutdown_pi.py
-# add this line to /etc/rc.local
-sudo python /home/pi/Scripts/shutdown_pi.py &
-
-
-#Setup a powermon ftp account for them and add the username/password to ftppush.sh
-sudo nano /usr/local/bin/ftppush.pl   # set the username/password for the location this is going to
+#Setup a powermon ftp account for them and add the username/password to /usr/local/bin/ftppush.sh
+sudo nano /usr/local/bin/ftppush.pl 
 
 sudo nano /etc/pagekite.d/10_account.rc:
     Replace "NAME.pagekite.me" with "blabla-powermon.pagekite.me" 
@@ -99,9 +48,8 @@ service_on = raw/22:@kitename : localhost:22 : @kitesecret
 service_cfg = @kitename:22  : ip/162.40.29   : ok
 
  
-sudo invoke-rc.d pagekite restart
-
 If using wifi, fill in the correct SSID and password by editing the file /etc/wpa_supplicant/wpa_supplicant.conf
+Also, if using wifi, edit /etc/cron.d/powermon and remove the "#" from the line about wifi_up.sh 
 
 
 change the password for user pi to something else secure and document it (sudo raspi-config)
@@ -115,4 +63,3 @@ UsePAM no
 /etc/init.d/sshd restart
 
 
-   Pass87orB34YRg

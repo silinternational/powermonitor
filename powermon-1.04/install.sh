@@ -31,12 +31,14 @@ cp -f outbackdata.sh /usr/local/bin/
 cp -f purgedata.sh /usr/local/bin/
 cp -f queryMateSerial /usr/local/bin/
 cp -f wifi-up.sh /usr/local/bin/
+cp -f shutdown_pi.py /usr/local/bin
 
 chmod 755 /usr/local/bin/ftppush.pl
 chmod 755 /usr/local/bin/outbackdata.sh
 chmod 755 /usr/local/bin/purgedata.sh
 chmod 755 /usr/local/bin/queryMateSerial
-
+chmod 755 /usr/local/bin/wifi-up.sh 
+chmod 755 /usr/local/bin/shutdown_pi.py 
 
 mkdir /home/$USER/LJFuse
 cp -f fuse.py /home/$USER/LJFuse/
@@ -74,7 +76,7 @@ python setup.py install
 usermod -a -G adm pi
 
 
-# add 3 new cron jobs
+# add new cron jobs
 cd $foldername
 #check if its already installed
 if [ ! -f /etc/cron.d/powermon ]
@@ -106,4 +108,5 @@ echo "You can edit /usr/local/bin/ftppush.pl"
 echo "if you need to change your username or password."
 echo " "
 echo "GTIS Powermon install complete"
+
 
