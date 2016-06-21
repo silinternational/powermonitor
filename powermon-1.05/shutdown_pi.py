@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 # Simple script for shutting down the raspberry Pi at the press of a button.
 # by Inderpreet Singh
 
