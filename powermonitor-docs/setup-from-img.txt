@@ -6,7 +6,7 @@ expand the filesystem to fill the SD card (sudo raspi-config)
 change the password for user pi to something else secure and document it (sudo raspi-config)
 set the proper timezone (sudo raspi-config)
 
-Check that the date & time are correct. If you have a network connection NTP should set the clock correctly automatically. You can set the tiem manually with:
+Check that the date & time are correct by typing "date". If you have a network connection NTP should have set the clock correctly automatically. You can set the time manually with:
 sudo date -s "11 JUN 2016 11:45:00"
 Set the hardware clock to match the system time:
 sudo hwclock -w
@@ -19,7 +19,6 @@ sudo apt-get --reinstall install openssh-server openssh-client
 OR:
 ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key 
 ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
-
 
 
 #Setup a powermon ftp account for them and write down the username/password
