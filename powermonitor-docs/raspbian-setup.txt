@@ -32,19 +32,14 @@ if [ -e /run/systemd/system ] ; then
    exit 0
 fi
 Comment out or remove the two lines which contain --systz
+
+
 sudo mkdir /media/thumbdrive
 sudo chown pi:pi /media/thumbdrive
 sudo nano /etc/udev/rules.d/automount.rules
 ACTION=="add",    KERNEL=="sda1", RUN+="/bin/mount -t vfat /dev/sda1 /media/thumbdrive -o uid=1000,gid=1000,utf8,dmask=000,fmask=133", RUN+="/home/pi/dump-to-usb.sh"
-ACTION=="remove", KERNEL=="sda1", RUN+="/usr/bin/umount sda1"
+ACTION=="add",    KERNEL=="sdb1", RUN+="/bin/mount -t vfat /dev/sdb1 /media/thumbdrive -o uid=1000,gid=1000,utf8,dmask=000,fmask=133", RUN+="/home/pi/dump-to-usb.sh"
 
-
-nano /home/pi/dump-to-usb.sh 
-#!/bin/bash
-mkdir /media/thumbdrive/power
-cp -uPa --target-directory=/media/thumbdrive/power /home/pi/power/*.csv
-
-chmod +x /home/pi/dump-to-usb.sh
 
 
 edit /etc/rsyslog.conf
